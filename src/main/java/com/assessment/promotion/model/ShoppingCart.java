@@ -1,5 +1,7 @@
 package com.assessment.promotion.model;
 
+import com.assessment.promotion.exception.InvalidShoppingCartException;
+
 import java.util.Map;
 
 public class ShoppingCart {
@@ -9,7 +11,10 @@ public class ShoppingCart {
         return cartContents;
     }
 
-    public void setCartContents(Map<Product, Integer> cartContents) {
+    public void setCartContents(Map<Product, Integer> cartContents) throws InvalidShoppingCartException {
+        if(cartContents.isEmpty())
+            throw new InvalidShoppingCartException();
+
         this.cartContents = cartContents;
     }
 
@@ -18,5 +23,9 @@ public class ShoppingCart {
     }
 
     public ShoppingCart() {
+    }
+
+    public void clear(){
+        this.cartContents = Map.of();
     }
 }
