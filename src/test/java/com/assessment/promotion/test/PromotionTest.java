@@ -1,16 +1,18 @@
 package com.assessment.promotion.test;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class PromotionTest {
 
     @BeforeAll
-    public void addPromotions(){
+    public static void addPromotions(){
 
     }
 
     @Test
+    @DisplayName("when SinglePromotionType Applied then Validate Cart Value")
     public void whenSinglePromotionTypeApplied_thenValidateCartValue(){
 
     }

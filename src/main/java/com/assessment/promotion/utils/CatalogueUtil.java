@@ -20,7 +20,7 @@ public class CatalogueUtil {
 
     public static Double getPrice(String productName) throws InvalidProductException {
         if(!products.containsKey(productName))
-            throw new InvalidProductException(productName+ " is not a valid product");
+            throw new InvalidProductException(productName+ " is not a valid SKU");
         return products.get(productName);
     }
 }
