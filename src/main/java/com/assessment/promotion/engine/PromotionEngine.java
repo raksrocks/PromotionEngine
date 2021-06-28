@@ -1,4 +1,4 @@
 package com.assessment.promotion.engine;
 
-public interface PromotionEngine {
+public class PromotionEngine {
 }
