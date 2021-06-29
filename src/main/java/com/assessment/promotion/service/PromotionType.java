@@ -7,9 +7,18 @@ import com.assessment.promotion.model.ShoppingCart;
 
 public interface PromotionType {
 
+    /*
+        Promotion is applied once on the cart and returns the remaining cart.
+     */
     ShoppingCart applyPromotion(ShoppingCart cart) throws InvalidPromotionCodeException, InvalidProductException, InvalidShoppingCartException;
 
+    /*
+        return true if the cart contents are valid for this promotion type
+     */
     boolean isAvailable(ShoppingCart cart) throws InvalidProductException;
 
-    public Double getDiscountedPrice() throws InvalidPromotionCodeException, InvalidProductException;
+    /*
+        returns the discount offered in this promo type
+     */
+    Double getDiscountedPrice() throws InvalidPromotionCodeException, InvalidProductException;
 }

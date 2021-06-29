@@ -16,35 +16,42 @@ import java.util.Map;
 public class MultiItemPromo implements PromotionType {
 
     private List<String> skuList = new ArrayList<>();
-    private Double discountedPrice = 0.0;
+    private Double discountedPrice;
 
     public MultiItemPromo(List<String> skus, Double discountedPrice) {
         this.skuList.addAll(skus);
         this.discountedPrice = discountedPrice;
     }
 
+    /*
+        Takes cart as input, applies the promotion and returns remaining cart
+     */
     public ShoppingCart applyPromotion(ShoppingCart cart) throws InvalidPromotionCodeException, InvalidShoppingCartException {
         if(!isAvailable(cart))
             throw new InvalidPromotionCodeException("Multi Item promotion is not applicable for your cart");
 
         ShoppingCart promoCart = new ShoppingCart(cart.getCartContents());
-        Map<Product, Integer> cartContents = new HashMap<>();
-        cartContents.putAll(cart.getCartContents());
+        // Use auxiliary variable as map is immutable
+        Map<Product, Integer> cartContents = new HashMap<>(cart.getCartContents());
+
         for(String sku: skuList){
             if(promoCart.getQuantity(sku)==1)
                 cartContents.remove(promoCart.getEntryBySKU(sku));
-           else
+            else
                 cartContents.putAll(promoCart.replaceItem(sku,promoCart.getQuantity(sku)-1));
         }
+        // Cart is now applied with promotion and any applicable products are removed from this copy
         promoCart.setCartContents(cartContents);
         return promoCart;
     }
 
+    /*
+        Check if the current promotion type is applicable on the contents of the cart.
+        Verify if multi items are available
+     */
     @Override
     public boolean isAvailable(ShoppingCart cart) {
 
-        boolean isSKUMatched = false;
-        boolean isQuantityMatched = false;
         Map<String, Boolean> matches = new HashMap<>();
 
         skuList.forEach(sku -> matches.put(sku, false));
@@ -54,10 +61,13 @@ public class MultiItemPromo implements PromotionType {
                matches.put(kv.getKey().getName(),true);
         }
 
-        return !matches.values().contains(false);
+        return !matches.containsValue(false);
 
     }
 
+    /*
+        returns the discount offered by this promotion
+     */
     public Double getDiscountedPrice() throws  InvalidProductException {
         double itemPrice = 0.0;
         for(String sku: skuList)

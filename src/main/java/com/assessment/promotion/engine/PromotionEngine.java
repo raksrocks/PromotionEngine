@@ -11,10 +11,13 @@ import com.assessment.promotion.utils.CatalogueUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+
 
 public class PromotionEngine implements IPromotionEngine{
 
+    /*
+        Returns full price of the cart without adding any promotions to it
+     */
     public Double getFullPrice(ShoppingCart cart) throws InvalidProductException {
         double fullPrice = 0.0;
 
@@ -24,12 +27,22 @@ public class PromotionEngine implements IPromotionEngine{
         return fullPrice;
     }
 
+    /*
+        Returns discounted price after applying te promotions.
+        Takes list of promotion types as the input and returns the price
+     */
     public Double getDiscountedPrice(ShoppingCart cart,  List<PromotionType> allPromotionTypes) throws InvalidProductException, InvalidPromotionCodeException, InvalidShoppingCartException {
         double promoPrice =  getFullPrice(cart);
 
         return applyAvailablePromotion(cart,allPromotionTypes,promoPrice);
     }
 
+    /*
+        Applies applicable promotions recursively until no applicable promotions left.
+        A copy of cart items will be reduced in iterations over and over until no items/no promotions left.
+
+        This generic logic works with any future promotion types as well.
+     */
     private Double applyAvailablePromotion(ShoppingCart cart, List<PromotionType> allPromos, Double cartPrice) throws InvalidPromotionCodeException, InvalidProductException, InvalidShoppingCartException {
 
         List<PromotionType> availablePromos = new ArrayList<PromotionType>();
@@ -51,13 +64,14 @@ public class PromotionEngine implements IPromotionEngine{
                 selectedPromo = promotion;
             }
         }
-
+        // reduce te cart items using the reduction method implemented on the promotion class
         ShoppingCart cartWithPromo = new ShoppingCart();
         if(null != selectedPromo){
             cartWithPromo = selectedPromo.applyPromotion(cart);
         }
         cartPrice -= discountedPrice;
 
+        // call the same method with resulting cart items
         return applyAvailablePromotion(cartWithPromo, availablePromos, cartPrice);
     }
 

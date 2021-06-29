@@ -23,6 +23,9 @@ public class SingleItemPromo implements PromotionType {
         this.discountedPrice = discountedPrice;
     }
 
+    /*
+        Takes cart as input, applies the promotion and returns remaining cart
+     */
     @Override
     public ShoppingCart applyPromotion(ShoppingCart cart) throws InvalidPromotionCodeException,  InvalidShoppingCartException {
 
@@ -33,7 +36,6 @@ public class SingleItemPromo implements PromotionType {
             throw new InvalidPromotionCodeException("Single Item Promotion is not applicable for your cart");
 
         ShoppingCart promoCart = new ShoppingCart(cart.getCartContents());
-        //Product requestedProduct = new Product(sku);
 
         int cartQuantity = promoCart.getQuantity(sku);
         Map<Product, Integer> updatedContents = new HashMap<>();
@@ -47,16 +49,23 @@ public class SingleItemPromo implements PromotionType {
         return promoCart;
     }
 
+    /*
+        Check if the current promotion type is applicable on the contents of the cart.
+        Verify if min quantity criteria is satisfied
+     */
     public boolean isAvailable(ShoppingCart cart) {
 
         // Fix object match issue
         for(Map.Entry<Product, Integer> kv: cart.getCartContents().entrySet()){
-            if(kv.getKey().getName().equalsIgnoreCase(sku) && kv.getValue() >= quantity)
+            if(kv.getKey().getName().equalsIgnoreCase(sku) && kv.getValue() >= quantity) // min quantity check
                 return true;
         }
         return false;
     }
 
+    /*
+           returns the discount offered by this promotion
+    */
     public Double getDiscountedPrice() throws InvalidProductException {
         return (CatalogueUtil.getPrice(sku) * this.quantity) - this.discountedPrice;
     }

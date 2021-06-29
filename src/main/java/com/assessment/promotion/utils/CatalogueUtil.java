@@ -1,7 +1,6 @@
 package com.assessment.promotion.utils;
 
 import com.assessment.promotion.exception.InvalidProductException;
-import com.assessment.promotion.model.Product;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,6 +8,10 @@ import java.util.Map;
 public class CatalogueUtil {
 
     private static Map<String,Double> products = new HashMap<String,Double>();
+    /*
+        Few default products are added at the start.
+        todo: Externalize the products store
+     */
     static
     {
         products.put("A",50.0);
