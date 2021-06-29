@@ -2,6 +2,7 @@ package com.assessment.promotion.engine;
 
 import com.assessment.promotion.exception.InvalidProductException;
 import com.assessment.promotion.exception.InvalidPromotionCodeException;
+import com.assessment.promotion.exception.InvalidShoppingCartException;
 import com.assessment.promotion.model.Product;
 import com.assessment.promotion.model.ShoppingCart;
 import com.assessment.promotion.service.PromotionType;
@@ -24,28 +25,33 @@ public class PromotionEngine implements IPromotionEngine{
         return fullPrice;
     }
 
-    public Double getDiscountedPrice(ShoppingCart cart, Double currentPrice, List<PromotionType> allPromotionTypes) throws InvalidProductException, InvalidPromotionCodeException {
-        double promoPrice = 0.0;
+    public Double getDiscountedPrice(ShoppingCart cart,  List<PromotionType> allPromotionTypes) throws InvalidProductException, InvalidPromotionCodeException, InvalidShoppingCartException {
+        double promoPrice =  getFullPrice(cart);
 
-        List<PromotionType> availablePromos = new ArrayList<PromotionType>();
-        for(PromotionType promoType: allPromotionTypes)
-            if(promoType.isAvailable(cart))
-                availablePromos.add(promoType);
-
-        if(availablePromos.isEmpty())
-            return getFullPrice(cart);
-        
-        return applyAvailablePromotion(cart,availablePromos);
+        return applyAvailablePromotion(cart,allPromotionTypes,promoPrice);
         //return promoPrice;
     }
 
-    private Double applyAvailablePromotion(ShoppingCart cart, List<PromotionType> availablePromos) throws InvalidPromotionCodeException, InvalidProductException {
-        double finalPrice = 0.0;
+    private Double applyAvailablePromotion(ShoppingCart cart, List<PromotionType> allPromos, Double cartPrice) throws InvalidPromotionCodeException, InvalidProductException, InvalidShoppingCartException {
+
+        List<PromotionType> availablePromos = new ArrayList<PromotionType>();
+        for(PromotionType promoType: allPromos) {
+            System.out.println(promoType.toString()+" "+promoType.isAvailable(cart));
+            if (promoType.isAvailable(cart))
+                availablePromos.add(promoType);
+        }
+
+        // unit test fix - breaking the recursive loop
+        if(availablePromos.isEmpty())
+            return cartPrice;
+
         PromotionType selectedPromo = null;
+        double discountedPrice = 0.0;
+
         for(PromotionType promotion: availablePromos){
-            double discountedPrice = promotion.getDiscountedPrice();
-            if(discountedPrice > finalPrice){
-                finalPrice = discountedPrice;
+            double offerPrice = promotion.getDiscountedPrice();
+            if(offerPrice > discountedPrice){
+                discountedPrice = offerPrice;
                 selectedPromo = promotion;
             }
         }
@@ -53,10 +59,10 @@ public class PromotionEngine implements IPromotionEngine{
         ShoppingCart cartWithPromo = new ShoppingCart();
         if(null != selectedPromo){
             cartWithPromo = selectedPromo.applyPromotion(cart);
-            // todo
         }
+        cartPrice -= discountedPrice;
 
-        return applyAvailablePromotion(cartWithPromo, availablePromos);
+        return applyAvailablePromotion(cartWithPromo, availablePromos, cartPrice);
     }
 
 }

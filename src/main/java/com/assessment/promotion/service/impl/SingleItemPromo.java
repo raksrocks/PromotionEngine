@@ -2,10 +2,14 @@ package com.assessment.promotion.service.impl;
 
 import com.assessment.promotion.exception.InvalidProductException;
 import com.assessment.promotion.exception.InvalidPromotionCodeException;
+import com.assessment.promotion.exception.InvalidShoppingCartException;
 import com.assessment.promotion.model.Product;
 import com.assessment.promotion.model.ShoppingCart;
 import com.assessment.promotion.service.PromotionType;
 import com.assessment.promotion.utils.CatalogueUtil;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SingleItemPromo implements PromotionType {
 
@@ -20,27 +24,50 @@ public class SingleItemPromo implements PromotionType {
     }
 
     @Override
-    public ShoppingCart applyPromotion(ShoppingCart cart) throws InvalidPromotionCodeException, InvalidProductException {
+    public ShoppingCart applyPromotion(ShoppingCart cart) throws InvalidPromotionCodeException, InvalidProductException, InvalidShoppingCartException {
+
+        if(cart.getCartContents().isEmpty())
+            return cart;
+
         if(!isAvailable(cart))
             throw new InvalidPromotionCodeException("Single Item Promotion is not applicable for your cart");
 
         ShoppingCart promoCart = new ShoppingCart(cart.getCartContents());
-        Product requestedProduct = new Product(sku);
-        int cartQuantity = promoCart.getCartContents().get(requestedProduct);
+        //Product requestedProduct = new Product(sku);
+
+        int cartQuantity = promoCart.getQuantity(sku);
+        Map<Product, Integer> updatedContents = new HashMap<>();
 
         if(cartQuantity-quantity == 0)
-            promoCart.getCartContents().remove(requestedProduct);
+            updatedContents.putAll(promoCart.removeItem(sku));
         else
-            promoCart.getCartContents().put(new Product(sku), cartQuantity-quantity);
+            updatedContents.putAll(promoCart.replaceItem(sku, cartQuantity-quantity));
 
+        promoCart.setCartContents(updatedContents);
         return promoCart;
     }
 
     public boolean isAvailable(ShoppingCart cart) throws InvalidProductException {
-        return cart.getCartContents().containsKey(new Product(sku));
+
+        //return cart.getCartContents().containsKey(new Product(sku));
+        // Fix object match issue
+        for(Map.Entry<Product, Integer> kv: cart.getCartContents().entrySet()){
+            if(kv.getKey().getName().equalsIgnoreCase(sku))
+                return true;
+        }
+        return false;
     }
 
     public Double getDiscountedPrice() throws InvalidProductException {
         return (CatalogueUtil.getPrice(sku) * this.quantity) - this.discountedPrice;
+    }
+
+    @Override
+    public String toString() {
+        return "SingleItemPromo{" +
+                "sku='" + sku + '\'' +
+                ", quantity=" + quantity +
+                ", discountedPrice=" + discountedPrice +
+                '}';
     }
 }

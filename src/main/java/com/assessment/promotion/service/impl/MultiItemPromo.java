@@ -55,4 +55,12 @@ public class MultiItemPromo implements PromotionType {
 
         return itemPrice - this.discountedPrice;
     }
+
+    @Override
+    public String toString() {
+        return "MultiItemPromo{" +
+                "skuList=" + skuList +
+                ", discountedPrice=" + discountedPrice +
+                '}';
+    }
 }

@@ -34,7 +34,7 @@ public class PromotionTest {
     @Test
     @DisplayName("when SinglePromotionType Applied then Validate Cart Value")
     public void whenSinglePromotionTypeApplied_thenValidateCartValue() throws InvalidProductException, InvalidShoppingCartException, InvalidPromotionCodeException {
-        Double  expectedPrice = 100.0;
+        Double  expectedPrice = 130.0;
         cart.clear();
         cart.setCartContents(Map.of(new Product("A") ,3));
         Double actualPrice = promoEngine.getDiscountedPrice(cart, promotionsList);

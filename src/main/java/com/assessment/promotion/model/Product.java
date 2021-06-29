@@ -27,4 +27,12 @@ public class Product {
         this.name = name;
         this.price = CatalogueUtil.getPrice(name);
     }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "name='" + name + '\'' +
+                ", price=" + price +
+                '}';
+    }
 }
