@@ -63,8 +63,21 @@ public class PromotionTest {
 
 
     @Test
-    public void whenComboPromotionTypeApplied_thenValidateCartValue(){
+    public void whenComboPromotionTypeApplied_thenValidateCartValue() throws InvalidProductException, InvalidPromotionCodeException, InvalidShoppingCartException {
+        Double  expectedPrice = 30.0;
+        cart.clear();
+        cart.setCartContents(Map.of(new Product("C") ,1, new Product("D") ,1));
+        Double actualPrice = promoEngine.getDiscountedPrice(cart, promotionsList);
+        Assertions.assertEquals(expectedPrice,actualPrice);
+    }
 
+    @Test
+    public void whenComboPromotionTypeAppliedCombo_thenValidateCartValue() throws InvalidProductException, InvalidPromotionCodeException, InvalidShoppingCartException {
+        Double  expectedPrice = 80.0;
+        cart.clear();
+        cart.setCartContents(Map.of(new Product("C") ,3, new Product("D") ,2));
+        Double actualPrice = promoEngine.getDiscountedPrice(cart, promotionsList);
+        Assertions.assertEquals(expectedPrice,actualPrice);
     }
 
     @Test
