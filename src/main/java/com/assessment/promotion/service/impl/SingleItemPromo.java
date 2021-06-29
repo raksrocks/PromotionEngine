@@ -43,5 +43,4 @@ public class SingleItemPromo implements PromotionType {
     public Double getDiscountedPrice() throws InvalidProductException {
         return (CatalogueUtil.getPrice(sku) * this.quantity) - this.discountedPrice;
     }
-
 }

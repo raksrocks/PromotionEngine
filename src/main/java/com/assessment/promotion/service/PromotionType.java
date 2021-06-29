@@ -9,4 +9,6 @@ public interface PromotionType {
     ShoppingCart applyPromotion(ShoppingCart cart) throws InvalidPromotionCodeException, InvalidProductException;
 
     boolean isAvailable(ShoppingCart cart) throws InvalidProductException;
+
+    public Double getDiscountedPrice() throws InvalidPromotionCodeException, InvalidProductException;
 }

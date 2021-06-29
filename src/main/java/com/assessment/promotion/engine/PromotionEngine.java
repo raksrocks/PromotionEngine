@@ -1,6 +1,7 @@
 package com.assessment.promotion.engine;
 
 import com.assessment.promotion.exception.InvalidProductException;
+import com.assessment.promotion.exception.InvalidPromotionCodeException;
 import com.assessment.promotion.model.Product;
 import com.assessment.promotion.model.ShoppingCart;
 import com.assessment.promotion.service.PromotionType;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class PromotionEngine {
+public class PromotionEngine implements IPromotionEngine{
 
     public Double getFullPrice(ShoppingCart cart) throws InvalidProductException {
         double fullPrice = 0.0;
@@ -23,7 +24,7 @@ public class PromotionEngine {
         return fullPrice;
     }
 
-    public Double getDiscountedPrice(ShoppingCart cart, Double currentPrice, List<PromotionType> allPromotionTypes) throws InvalidProductException {
+    public Double getDiscountedPrice(ShoppingCart cart, Double currentPrice, List<PromotionType> allPromotionTypes) throws InvalidProductException, InvalidPromotionCodeException {
         double promoPrice = 0.0;
 
         List<PromotionType> availablePromos = new ArrayList<PromotionType>();
@@ -33,8 +34,17 @@ public class PromotionEngine {
 
         if(availablePromos.isEmpty())
             return getFullPrice(cart);
+        
+        return applyAvailablePromotion(cart,availablePromos);
+        //return promoPrice;
+    }
 
-        return promoPrice;
+    private Double applyAvailablePromotion(ShoppingCart cart, List<PromotionType> availablePromos) throws InvalidPromotionCodeException, InvalidProductException {
+        double finalPrice = 0.0;
+        for(PromotionType promotion: availablePromos){
+            double discount = promotion.getDiscountedPrice();
+        }
+        return finalPrice;
     }
 
 }
