@@ -58,9 +58,9 @@ public class PromotionEngineTest {
     }
 
     @Test
-    @DisplayName("Scenario C : 3*A = 130 ~ 5*B = 45 45 + 1*30 ~ 1*C 1*D = 30 :: Total=190")
+    @DisplayName("Scenario C : 3*A = 130 ~ 5*B = 45 45 + 1*30 ~ 1*C 1*D = 30 :: Total=280")
     public void whenComboPromoTypeApplied_thenVerifyTheCartValue() throws InvalidProductException, InvalidShoppingCartException, InvalidPromotionCodeException {
-        Double  expectedPrice = 190.0;
+        Double  expectedPrice = 280.0;
         cart.clear();
         cart.setCartContents(
                 Map.of( new Product("A") ,3,
