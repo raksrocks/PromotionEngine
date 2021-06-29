@@ -39,11 +39,9 @@ public class ShoppingCart {
     }
 
     public Map<Product, Integer> removeItem(String sku){
-        System.out.println("Before removing " + toString());
         Product tobeRemoved = null;
         Map<Product, Integer> temp = new HashMap<>();
         temp.putAll(this.cartContents);
-        System.out.println("TEMP removing " + temp.toString());
 
         for(Map.Entry<Product, Integer> kv: temp.entrySet()){
             if(kv.getKey().getName().equalsIgnoreCase(sku))
@@ -52,8 +50,6 @@ public class ShoppingCart {
         if(null != tobeRemoved)
             temp.remove(tobeRemoved);
 
-        System.out.println("After removing " + toString());
-        System.out.println("TEMP removing " + temp.toString());
         return temp;
     }
 

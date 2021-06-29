@@ -31,14 +31,9 @@ public class MultiItemPromo implements PromotionType {
         Map<Product, Integer> cartContents = new HashMap<>();
         cartContents.putAll(cart.getCartContents());
         for(String sku: skuList){
-            //Product prod = new Product(sku);
             if(promoCart.getQuantity(sku)==1)
-                //cartContents.remove(prod);
-                //promoCart.removeItem(sku);
                 cartContents.remove(promoCart.getEntryBySKU(sku));
-
-            else
-                //cartContents.put(prod,cartContents.get(prod)-1);
+           else
                 cartContents.putAll(promoCart.replaceItem(sku,promoCart.getQuantity(sku)-1));
         }
         promoCart.setCartContents(cartContents);
@@ -63,7 +58,7 @@ public class MultiItemPromo implements PromotionType {
 
     }
 
-    public Double getDiscountedPrice() throws InvalidPromotionCodeException, InvalidProductException {
+    public Double getDiscountedPrice() throws  InvalidProductException {
         double itemPrice = 0.0;
         for(String sku: skuList)
             itemPrice += CatalogueUtil.getPrice(sku);

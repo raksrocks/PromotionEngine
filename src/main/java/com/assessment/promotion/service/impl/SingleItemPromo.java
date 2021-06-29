@@ -24,7 +24,7 @@ public class SingleItemPromo implements PromotionType {
     }
 
     @Override
-    public ShoppingCart applyPromotion(ShoppingCart cart) throws InvalidPromotionCodeException, InvalidProductException, InvalidShoppingCartException {
+    public ShoppingCart applyPromotion(ShoppingCart cart) throws InvalidPromotionCodeException,  InvalidShoppingCartException {
 
         if(cart.getCartContents().isEmpty())
             return cart;
@@ -47,9 +47,8 @@ public class SingleItemPromo implements PromotionType {
         return promoCart;
     }
 
-    public boolean isAvailable(ShoppingCart cart) throws InvalidProductException {
+    public boolean isAvailable(ShoppingCart cart) {
 
-        //return cart.getCartContents().containsKey(new Product(sku));
         // Fix object match issue
         for(Map.Entry<Product, Integer> kv: cart.getCartContents().entrySet()){
             if(kv.getKey().getName().equalsIgnoreCase(sku) && kv.getValue() >= quantity)

@@ -18,7 +18,6 @@ public class PromotionEngine implements IPromotionEngine{
     public Double getFullPrice(ShoppingCart cart) throws InvalidProductException {
         double fullPrice = 0.0;
 
-       // Map<Product, Integer> cartContents = cart.getCartContents();
         for(Map.Entry<Product,Integer> entry: cart.getCartContents().entrySet()){
             fullPrice += entry.getValue() * CatalogueUtil.getPrice(entry.getKey().getName());
         }
@@ -29,17 +28,14 @@ public class PromotionEngine implements IPromotionEngine{
         double promoPrice =  getFullPrice(cart);
 
         return applyAvailablePromotion(cart,allPromotionTypes,promoPrice);
-        //return promoPrice;
     }
 
     private Double applyAvailablePromotion(ShoppingCart cart, List<PromotionType> allPromos, Double cartPrice) throws InvalidPromotionCodeException, InvalidProductException, InvalidShoppingCartException {
 
         List<PromotionType> availablePromos = new ArrayList<PromotionType>();
-        for(PromotionType promoType: allPromos) {
-            System.out.println(promoType.toString()+" "+promoType.isAvailable(cart));
+        for(PromotionType promoType: allPromos)
             if (promoType.isAvailable(cart))
                 availablePromos.add(promoType);
-        }
 
         // unit test fix - breaking the recursive loop
         if(availablePromos.isEmpty())
