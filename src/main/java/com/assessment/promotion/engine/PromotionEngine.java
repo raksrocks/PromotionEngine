@@ -41,10 +41,22 @@ public class PromotionEngine implements IPromotionEngine{
 
     private Double applyAvailablePromotion(ShoppingCart cart, List<PromotionType> availablePromos) throws InvalidPromotionCodeException, InvalidProductException {
         double finalPrice = 0.0;
+        PromotionType selectedPromo = null;
         for(PromotionType promotion: availablePromos){
-            double discount = promotion.getDiscountedPrice();
+            double discountedPrice = promotion.getDiscountedPrice();
+            if(discountedPrice > finalPrice){
+                finalPrice = discountedPrice;
+                selectedPromo = promotion;
+            }
         }
-        return finalPrice;
+
+        ShoppingCart cartWithPromo = new ShoppingCart();
+        if(null != selectedPromo){
+            cartWithPromo = selectedPromo.applyPromotion(cart);
+            // todo
+        }
+
+        return applyAvailablePromotion(cartWithPromo, availablePromos);
     }
 
 }
