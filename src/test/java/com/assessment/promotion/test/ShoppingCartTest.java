@@ -36,12 +36,6 @@ public class ShoppingCartTest {
         )));
     }
 
-    @Test
-    @DisplayName("When Cart Items Are Invalid Then No Error")
-    public void whenCartItemsAreInvalid_thenError(){
-        cart.clear();
-        Assertions.assertThrows(InvalidShoppingCartException.class, ()->cart.setCartContents(new HashMap<Product,Integer>()));
-    }
 
     @Test
     @DisplayName("When Cart Items Are Incorrect Then No Error")

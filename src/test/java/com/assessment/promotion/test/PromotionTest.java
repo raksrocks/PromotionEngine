@@ -8,6 +8,8 @@ import com.assessment.promotion.exception.InvalidShoppingCartException;
 import com.assessment.promotion.model.Product;
 import com.assessment.promotion.model.ShoppingCart;
 import com.assessment.promotion.service.PromotionType;
+import com.assessment.promotion.service.impl.MultiItemPromo;
+import com.assessment.promotion.service.impl.SingleItemPromo;
 import com.assessment.promotion.utils.PromotionUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -29,6 +31,24 @@ public class PromotionTest {
         promotionsList = PromotionUtil.createPromotions();
         cart = new ShoppingCart();
 
+    }
+
+    @Test
+    public void testIsAvailableSingleItem() throws InvalidProductException, InvalidShoppingCartException {
+        PromotionType promo = new SingleItemPromo("A",2,100.0);
+        cart.clear();
+        cart.setCartContents(Map.of(new Product("A") ,3));
+        boolean actual = promo.isAvailable(cart);
+        Assertions.assertTrue(actual);
+    }
+
+    @Test
+    public void testIsAvailableMultiItem() throws InvalidProductException, InvalidShoppingCartException {
+        PromotionType promo = new MultiItemPromo(List.of("A","B"),100.0);
+        cart.clear();
+        cart.setCartContents(Map.of(new Product("A") ,3));
+        boolean actual = promo.isAvailable(cart);
+        Assertions.assertFalse(actual);
     }
 
     @Test
@@ -81,13 +101,24 @@ public class PromotionTest {
     }
 
     @Test
-    public void whenSinglePromotionTypeNotApplied_thenValidateCartValue(){
-
+    public void whenSinglePromotionTypeNotApplied_thenValidateCartValue() throws InvalidProductException, InvalidPromotionCodeException, InvalidShoppingCartException {
+        Double  expectedPrice = 100.0;
+        cart.clear();
+        cart.setCartContents(Map.of(new Product("A") ,2));
+        Double actualPrice = promoEngine.getDiscountedPrice(cart, promotionsList);
+        Assertions.assertEquals(expectedPrice,actualPrice);
     }
 
     @Test
-    public void whenComboPromotionTypeNotApplied_thenValidateCartValue(){
-
+    public void whenComboPromotionTypeNotApplied_thenValidateCartValue() throws InvalidProductException, InvalidPromotionCodeException, InvalidShoppingCartException {
+        Double  expectedPrice = 100.0;
+        cart.clear();
+        cart.setCartContents(
+                Map.of(new Product("A") ,1,
+                       new Product("B") ,1,
+                       new Product("C") ,1));
+        Double actualPrice = promoEngine.getDiscountedPrice(cart, promotionsList);
+        Assertions.assertEquals(expectedPrice,actualPrice);
     }
 
     @Test
