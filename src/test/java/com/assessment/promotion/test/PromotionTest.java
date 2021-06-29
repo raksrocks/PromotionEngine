@@ -32,7 +32,7 @@ public class PromotionTest {
     }
 
     @Test
-    @DisplayName("when SinglePromotionType Applied then Validate Cart Value")
+    @DisplayName("When SinglePromotionType Applied then Validate Cart Value")
     public void whenSinglePromotionTypeApplied_thenValidateCartValue() throws InvalidProductException, InvalidShoppingCartException, InvalidPromotionCodeException {
         Double  expectedPrice = 130.0;
         cart.clear();
@@ -40,6 +40,27 @@ public class PromotionTest {
         Double actualPrice = promoEngine.getDiscountedPrice(cart, promotionsList);
         Assertions.assertEquals(expectedPrice,actualPrice);
     }
+
+    @Test
+    @DisplayName("When SinglePromotionType Applied on Combo cart then Validate Cart Value")
+    public void whenSinglePromotionTypeAppliedComboCart_thenValidateCartValue() throws InvalidProductException, InvalidShoppingCartException, InvalidPromotionCodeException {
+        Double  expectedPrice = 160.0;
+        cart.clear();
+        cart.setCartContents(Map.of(new Product("A") ,3, new Product("B") ,1));
+        Double actualPrice = promoEngine.getDiscountedPrice(cart, promotionsList);
+        Assertions.assertEquals(expectedPrice,actualPrice);
+    }
+
+    @Test
+    @DisplayName("When SinglePromotionType Applied on Combo cart and combo promotion then Validate Cart Value")
+    public void whenSinglePromotionTypeAppliedComboCartAndPromotion_thenValidateCartValue() throws InvalidProductException, InvalidShoppingCartException, InvalidPromotionCodeException {
+        Double  expectedPrice = 175.0;
+        cart.clear();
+        cart.setCartContents(Map.of(new Product("A") ,3, new Product("B") ,2));
+        Double actualPrice = promoEngine.getDiscountedPrice(cart, promotionsList);
+        Assertions.assertEquals(expectedPrice,actualPrice);
+    }
+
 
     @Test
     public void whenComboPromotionTypeApplied_thenValidateCartValue(){
