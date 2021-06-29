@@ -2,12 +2,14 @@ package com.assessment.promotion.service.impl;
 
 import com.assessment.promotion.exception.InvalidProductException;
 import com.assessment.promotion.exception.InvalidPromotionCodeException;
+import com.assessment.promotion.exception.InvalidShoppingCartException;
 import com.assessment.promotion.model.Product;
 import com.assessment.promotion.model.ShoppingCart;
 import com.assessment.promotion.service.PromotionType;
 import com.assessment.promotion.utils.CatalogueUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,31 +23,44 @@ public class MultiItemPromo implements PromotionType {
         this.discountedPrice = discountedPrice;
     }
 
-    public ShoppingCart applyPromotion(ShoppingCart cart) throws InvalidPromotionCodeException, InvalidProductException {
+    public ShoppingCart applyPromotion(ShoppingCart cart) throws InvalidPromotionCodeException, InvalidShoppingCartException {
         if(!isAvailable(cart))
             throw new InvalidPromotionCodeException("Multi Item promotion is not applicable for your cart");
 
-        ShoppingCart discountedCart = new ShoppingCart(cart.getCartContents());
-        Map<Product, Integer> cartContents = discountedCart.getCartContents();
-
+        ShoppingCart promoCart = new ShoppingCart(cart.getCartContents());
+        Map<Product, Integer> cartContents = new HashMap<>();
+        cartContents.putAll(cart.getCartContents());
         for(String sku: skuList){
-            Product prod = new Product(sku);
-            if(cartContents.get(prod)==1)
-                cartContents.remove(prod);
-            else
-                cartContents.put(prod,cartContents.get(prod)-1);
-        }
+            //Product prod = new Product(sku);
+            if(promoCart.getQuantity(sku)==1)
+                //cartContents.remove(prod);
+                //promoCart.removeItem(sku);
+                cartContents.remove(promoCart.getEntryBySKU(sku));
 
-        return discountedCart;
+            else
+                //cartContents.put(prod,cartContents.get(prod)-1);
+                cartContents.putAll(promoCart.replaceItem(sku,promoCart.getQuantity(sku)-1));
+        }
+        promoCart.setCartContents(cartContents);
+        return promoCart;
     }
 
     @Override
     public boolean isAvailable(ShoppingCart cart) {
 
-        for(String sku: skuList)
-            if(!cart.getCartContents().containsKey(sku))
-                return false;
-        return true;
+        boolean isSKUMatched = false;
+        boolean isQuantityMatched = false;
+        Map<String, Boolean> matches = new HashMap<>();
+
+        skuList.forEach(sku -> matches.put(sku, false));
+
+        for(Map.Entry<Product, Integer> kv: cart.getCartContents().entrySet()){
+            if(skuList.contains(kv.getKey().getName()))
+               matches.put(kv.getKey().getName(),true);
+        }
+
+        return !matches.values().contains(false);
+
     }
 
     public Double getDiscountedPrice() throws InvalidPromotionCodeException, InvalidProductException {

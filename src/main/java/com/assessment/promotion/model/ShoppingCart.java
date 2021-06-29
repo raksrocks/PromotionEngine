@@ -58,7 +58,6 @@ public class ShoppingCart {
     }
 
     public Map<Product, Integer> replaceItem(String sku, Integer qty){
-        System.out.println(toString());
         Product toBeModified = null;
         Map<Product, Integer> temp = new HashMap<>();
         temp.putAll(this.cartContents);
@@ -69,7 +68,6 @@ public class ShoppingCart {
         }
         if(null != toBeModified)
             temp.put(toBeModified,qty);
-        System.out.println(toString());
         return temp;
     }
 
@@ -78,5 +76,13 @@ public class ShoppingCart {
         return "ShoppingCart{" +
                 "cartContents=" + cartContents.toString() +
                 '}';
+    }
+
+    public Product getEntryBySKU(String sku){
+        for(Map.Entry<Product, Integer> kv: cartContents.entrySet()){
+            if(kv.getKey().getName().equalsIgnoreCase(sku))
+                return kv.getKey();
+        }
+        return null;
     }
 }

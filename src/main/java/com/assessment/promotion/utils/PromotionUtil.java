@@ -14,7 +14,7 @@ public class PromotionUtil {
         List<PromotionType> promos = new ArrayList<>();
         promos.add(new SingleItemPromo("A",3, 130.0));
         promos.add(new SingleItemPromo("B",2, 45.0));
-        promos.add(new MultiItemPromo(List.of("C","D"), 130.0));
+        promos.add(new MultiItemPromo(List.of("C","D"), 30.0));
 
         return promos;
     }
