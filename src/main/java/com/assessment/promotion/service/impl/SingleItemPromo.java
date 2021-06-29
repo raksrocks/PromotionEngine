@@ -52,7 +52,7 @@ public class SingleItemPromo implements PromotionType {
         //return cart.getCartContents().containsKey(new Product(sku));
         // Fix object match issue
         for(Map.Entry<Product, Integer> kv: cart.getCartContents().entrySet()){
-            if(kv.getKey().getName().equalsIgnoreCase(sku))
+            if(kv.getKey().getName().equalsIgnoreCase(sku) && kv.getValue() >= quantity)
                 return true;
         }
         return false;
